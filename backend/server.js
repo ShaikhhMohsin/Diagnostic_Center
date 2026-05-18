@@ -20,7 +20,7 @@ dotenv.config();
 // Connect to database
 connectDB().then(() => {
   // Seed Database
-  seedDatabase();
+  //seedDatabase();
 });
 
 const app = express();
