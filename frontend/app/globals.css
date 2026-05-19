@@ -11,14 +11,14 @@
   --color-primary-700: #1d4ed8;
 }
 
-@layer base {
-  html {
-    scroll-behavior: smooth;
-  }
-  body {
-    @apply antialiased text-slate-800 bg-slate-50;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
-  }
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply antialiased text-slate-800 bg-slate-50;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
 }
