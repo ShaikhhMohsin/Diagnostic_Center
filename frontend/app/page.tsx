@@ -79,10 +79,10 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="bg-white min-h-screen flex flex-col justify-between">
+    <div className="bg-white dark:bg-slate-950 min-h-screen flex flex-col justify-between transition-colors duration-300">
       <div>
         {/* HERO SECTION */}
-        <section className="relative overflow-hidden pt-12 pb-24 lg:pt-20 lg:pb-32 bg-slate-50">
+        <section className="relative overflow-hidden pt-12 pb-24 lg:pt-20 lg:pb-32 bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
           <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50/70 via-white to-white" />
           
           <div className="max-w-7xl mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-16 items-center">
@@ -98,9 +98,9 @@ export default function HomePage() {
                 <span>NABL & CAP Clinical Compliance Standards</span>
               </div>
 
-              <h1 className="font-heading font-bold text-slate-900 text-4xl sm:text-5xl lg:text-6xl leading-tight">
+              <h1 className="font-heading font-bold text-slate-900 dark:text-slate-50 text-4xl sm:text-5xl lg:text-6xl leading-tight">
                 Advanced Lab Testing, <br />
-                <span className="text-blue-600">Right at Your Doorstep.</span>
+                <span className="text-blue-600 dark:text-blue-400">Right at Your Doorstep.</span>
               </h1>
 
               <p className="text-slate-500 text-lg leading-relaxed max-w-lg">
@@ -174,11 +174,11 @@ export default function HomePage() {
         </section>
 
         {/* TRUST BADGES & FEATURES */}
-        <section className="px-6 py-20 bg-white">
+        <section className="px-6 py-20 bg-white dark:bg-slate-950 transition-colors duration-300">
           <div className="max-w-7xl mx-auto flex flex-col gap-16">
             <div className="text-center max-w-xl mx-auto flex flex-col gap-3">
-              <span className="text-xs text-blue-600 font-bold uppercase tracking-wider">Accurate Diagnostics</span>
-              <h2 className="font-heading font-bold text-slate-800 text-3xl sm:text-4xl">
+              <span className="text-xs text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider">Accurate Diagnostics</span>
+              <h2 className="font-heading font-bold text-slate-800 dark:text-slate-100 text-3xl sm:text-4xl">
                 Premium Standards. Certified Care.
               </h2>
               <p className="text-slate-400 text-sm leading-relaxed">
@@ -188,8 +188,8 @@ export default function HomePage() {
 
             <div className="grid md:grid-cols-3 gap-8">
               {/* Feature 1 */}
-              <div className="bg-slate-50 border border-slate-100 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:bg-white transition-all group">
-                <div className="bg-blue-100 text-blue-600 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-md">
+              <div className="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:bg-white dark:hover:bg-slate-800 transition-all group">
+                <div className="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-md">
                   <ShieldCheck className="w-6 h-6" />
                 </div>
                 <h3 className="font-heading font-bold text-slate-800 text-xl mb-3">Certified Accuracy</h3>
@@ -199,8 +199,8 @@ export default function HomePage() {
               </div>
 
               {/* Feature 2 */}
-              <div className="bg-slate-50 border border-slate-100 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:bg-white transition-all group">
-                <div className="bg-blue-100 text-blue-600 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-md">
+              <div className="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:bg-white dark:hover:bg-slate-800 transition-all group">
+                <div className="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-md">
                   <Clock className="w-6 h-6" />
                 </div>
                 <h3 className="font-heading font-bold text-slate-800 text-xl mb-3">Rapid Reports</h3>
@@ -210,8 +210,8 @@ export default function HomePage() {
               </div>
 
               {/* Feature 3 */}
-              <div className="bg-slate-50 border border-slate-100 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:bg-white transition-all group">
-                <div className="bg-blue-100 text-blue-600 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-md">
+              <div className="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:bg-white dark:hover:bg-slate-800 transition-all group">
+                <div className="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-md">
                   <Microscope className="w-6 h-6" />
                 </div>
                 <h3 className="font-heading font-bold text-slate-800 text-xl mb-3">Hygienic Home Visit</h3>
@@ -224,12 +224,12 @@ export default function HomePage() {
         </section>
 
         {/* POPULAR HEALTH PACKAGES */}
-        <section className="px-6 py-20 bg-slate-50">
+        <section className="px-6 py-20 bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
           <div className="max-w-7xl mx-auto flex flex-col gap-12">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
               <div className="max-w-md flex flex-col gap-3">
-                <span className="text-xs text-blue-600 font-bold uppercase tracking-wider">Top Curated Packages</span>
-                <h2 className="font-heading font-bold text-slate-800 text-3xl">Comprehensive Health Checkups</h2>
+                <span className="text-xs text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider">Top Curated Packages</span>
+                <h2 className="font-heading font-bold text-slate-800 dark:text-slate-100 text-3xl">Comprehensive Health Checkups</h2>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   Bundle multiple diagnostic metrics together to save over 50% and track metabolic pathways.
                 </p>
@@ -245,7 +245,7 @@ export default function HomePage() {
 
             <div className="grid md:grid-cols-2 gap-8">
               {packages.map((pkg) => (
-                <div key={pkg._id} className="bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
+                <div key={pkg._id} className="bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col justify-between">
                   <div className="relative h-56 w-full">
                     <img
                       src={pkg.image}
@@ -286,12 +286,12 @@ export default function HomePage() {
         </section>
 
         {/* POPULAR INDIVIDUAL TESTS */}
-        <section className="px-6 py-20 bg-white">
+        <section className="px-6 py-20 bg-white dark:bg-slate-950 transition-colors duration-300">
           <div className="max-w-7xl mx-auto flex flex-col gap-12">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
               <div className="max-w-md flex flex-col gap-3">
-                <span className="text-xs text-blue-600 font-bold uppercase tracking-wider">Laboratory Catalog</span>
-                <h2 className="font-heading font-bold text-slate-800 text-3xl">Popular Laboratory Tests</h2>
+                <span className="text-xs text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider">Laboratory Catalog</span>
+                <h2 className="font-heading font-bold text-slate-800 dark:text-slate-100 text-3xl">Popular Laboratory Tests</h2>
                 <p className="text-slate-400 text-sm leading-relaxed">
                   Individual diagnostics covering standard metabolic paths, vitamin checks, and glucose levels.
                 </p>
@@ -307,7 +307,7 @@ export default function HomePage() {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {tests.map((test) => (
-                <div key={test._id} className="bg-slate-50 border border-slate-100 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:bg-white transition-all flex flex-col justify-between">
+                <div key={test._id} className="bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:bg-white dark:hover:bg-slate-800 transition-all flex flex-col justify-between">
                   <div>
                     <span className="text-[10px] bg-slate-200/50 text-slate-500 font-bold px-2 py-1 rounded-md uppercase tracking-wider border border-slate-200/20">
                       {test.category}
@@ -335,18 +335,18 @@ export default function HomePage() {
         </section>
 
         {/* CLINICAL TESTIMONIALS */}
-        <section className="px-6 py-20 bg-slate-50">
+        <section className="px-6 py-20 bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
           <div className="max-w-7xl mx-auto flex flex-col gap-16">
             <div className="text-center max-w-xl mx-auto flex flex-col gap-3">
-              <span className="text-xs text-blue-600 font-bold uppercase tracking-wider">Patient Testimonials</span>
-              <h2 className="font-heading font-bold text-slate-800 text-3xl sm:text-4xl">
+              <span className="text-xs text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider">Patient Testimonials</span>
+              <h2 className="font-heading font-bold text-slate-800 dark:text-slate-100 text-3xl sm:text-4xl">
                 What Patients Say About Us
               </h2>
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
               {/* Testimonial 1 */}
-              <div className="bg-white border border-slate-100 rounded-3xl p-8 shadow-sm flex flex-col justify-between gap-6">
+              <div className="bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-3xl p-8 shadow-sm flex flex-col justify-between gap-6">
                 <div className="flex gap-1 text-amber-400">
                   <Star className="w-5 h-5 fill-current" />
                   <Star className="w-5 h-5 fill-current" />
@@ -369,7 +369,7 @@ export default function HomePage() {
               </div>
 
               {/* Testimonial 2 */}
-              <div className="bg-white border border-slate-100 rounded-3xl p-8 shadow-sm flex flex-col justify-between gap-6">
+              <div className="bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-3xl p-8 shadow-sm flex flex-col justify-between gap-6">
                 <div className="flex gap-1 text-amber-400">
                   <Star className="w-5 h-5 fill-current" />
                   <Star className="w-5 h-5 fill-current" />
@@ -392,7 +392,7 @@ export default function HomePage() {
               </div>
 
               {/* Testimonial 3 */}
-              <div className="bg-white border border-slate-100 rounded-3xl p-8 shadow-sm flex flex-col justify-between gap-6">
+              <div className="bg-white dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-3xl p-8 shadow-sm flex flex-col justify-between gap-6">
                 <div className="flex gap-1 text-amber-400">
                   <Star className="w-5 h-5 fill-current" />
                   <Star className="w-5 h-5 fill-current" />

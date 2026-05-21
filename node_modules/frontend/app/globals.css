@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
 
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -16,7 +19,7 @@ html {
 }
 
 body {
-  @apply antialiased text-slate-800 bg-slate-50;
+  @apply antialiased text-slate-800 bg-slate-50 dark:text-slate-100 dark:bg-slate-950 transition-colors duration-300;
 }
 
 h1, h2, h3, h4, h5, h6 {
