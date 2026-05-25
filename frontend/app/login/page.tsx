@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Activity, Mail, Lock, AlertCircle, ArrowRight, Sparkles } from "lucide-react";
+import { Activity, Mail, Lock, AlertCircle, ArrowRight } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 function LoginForm() {
@@ -38,24 +38,15 @@ function LoginForm() {
     try {
       const ok = await login(email, password);
       if (!ok) {
-        setError("Invalid email or password");
+        setError("Invalid email or password. Please check your credentials.");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Connection timed out or network error");
+      setError(err.response?.data?.message || "Cannot connect to the local server. Please ensure the backend is running on port 5000.");
     } finally {
       setBtnLoading(false);
     }
   };
 
-  const prefill = (role: "admin" | "patient") => {
-    if (role === "admin") {
-      setEmail("ahmedpasha@gmail.com");
-      setPassword("admin123");
-    } else {
-      setEmail("patient@example.com");
-      setPassword("patient123");
-    }
-  };
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-slate-50 flex items-center justify-center py-12 px-6 relative overflow-hidden">
@@ -133,29 +124,6 @@ function LoginForm() {
           </button>
         </form>
 
-        {/* Sandbox Quick-fill accounts (Evaluators will love this!) */}
-        <div className="bg-slate-50 border border-slate-200/40 rounded-2xl p-4 flex flex-col gap-3 mt-8">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-blue-600 fill-blue-600/10" />
-            Sandbox Testing Accounts
-          </span>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => prefill("patient")}
-              className="bg-white border border-slate-200 rounded-xl py-2 px-2.5 text-[10px] font-bold text-slate-600 hover:bg-slate-100 transition-all text-left flex flex-col gap-0.5 cursor-pointer"
-            >
-              <span className="text-blue-600">Patient Sandbox</span>
-              <span className="text-[8px] text-slate-400 lowercase">patient123</span>
-            </button>
-            <button
-              onClick={() => prefill("admin")}
-              className="bg-white border border-slate-200 rounded-xl py-2 px-2.5 text-[10px] font-bold text-slate-600 hover:bg-slate-100 transition-all text-left flex flex-col gap-0.5 cursor-pointer"
-            >
-              <span className="text-red-600">Admin Sandbox</span>
-              <span className="text-[8px] text-slate-400 lowercase">admin123</span>
-            </button>
-          </div>
-        </div>
 
         <div className="mt-8 text-center text-xs text-slate-400">
           New to Multi Diagnostic?{" "}

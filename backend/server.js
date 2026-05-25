@@ -13,6 +13,7 @@ const appointmentRoutes = require("./routes/appointmentRoutes");
 const reportRoutes = require("./routes/reportRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
+const patientRoutes = require("./routes/patientRoutes");
 
 // Load env vars
 dotenv.config();
@@ -25,12 +26,31 @@ connectDB().then(() => {
 
 const app = express();
 
+// Ensure local folders exist
+const path = require("path");
+const fs = require("fs");
+const localFolders = [
+  path.join(__dirname, "uploads"),
+  path.join(__dirname, "reports"),
+  path.join(__dirname, "payments")
+];
+localFolders.forEach(folder => {
+  if (!fs.existsSync(folder)) {
+    fs.mkdirSync(folder, { recursive: true });
+  }
+});
+
 // Middleware
 app.use(express.json());
 app.use(cors());
 app.use(helmet({
-  crossOriginResourcePolicy: false // Allows loading external medical images from Unsplash securely
+  crossOriginResourcePolicy: false // Allows loading external medical images securely
 }));
+
+// Serve local folders statically
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/reports", express.static(path.join(__dirname, "reports")));
+app.use("/payments", express.static(path.join(__dirname, "payments")));
 
 // Mount Routes
 app.use("/api/auth", authRoutes);
@@ -40,6 +60,7 @@ app.use("/api/appointments", appointmentRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin/analytics", analyticsRoutes);
+app.use("/api/patients", patientRoutes);
 
 // Basic Health Check Route
 app.get("/api/health", (req, res) => {

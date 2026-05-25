@@ -6,36 +6,9 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import API from "@/services/api";
 
-const FALLBACK_ANALYTICS = {
-  totalRevenue: 75450,
-  totalUsers: 142,
-  totalTestsCount: 88,
-  pendingAppointmentsCount: 4
-};
-
-const FALLBACK_APPOINTMENTS = [
-  {
-    _id: "app-101",
-    user: { name: "John Doe", email: "patient@example.com" },
-    type: "Home Collection",
-    date: new Date().toISOString(),
-    timeslot: "08:00 AM - 10:00 AM",
-    status: "Confirmed",
-    totalAmount: 999
-  },
-  {
-    _id: "app-102",
-    user: { name: "Sarah Jenkins", email: "sarah@gmail.com" },
-    type: "Lab Visit",
-    date: new Date().toISOString(),
-    timeslot: "10:00 AM - 12:00 PM",
-    status: "Pending",
-    totalAmount: 299
-  }
-];
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState(FALLBACK_ANALYTICS);
+  const [stats, setStats] = useState<any>(null);
   const [appointments, setAppointments] = useState<any[]>([]);
 
   const fetchAdminDetails = async () => {
@@ -44,9 +17,8 @@ export default function AdminDashboard() {
       if (statsRes.data.status === "success") {
         setStats(statsRes.data.data);
       }
-    } catch (err) {
-      console.warn("Could not query live analytics, showing sandbox mockup values.");
-      setStats(FALLBACK_ANALYTICS);
+    } catch {
+      // backend not available
     }
 
     try {
@@ -54,8 +26,8 @@ export default function AdminDashboard() {
       if (appRes.data.status === "success") {
         setAppointments(appRes.data.data);
       }
-    } catch (err) {
-      setAppointments(FALLBACK_APPOINTMENTS);
+    } catch {
+      setAppointments([]);
     }
   };
 
@@ -68,12 +40,10 @@ export default function AdminDashboard() {
       const res = await API.put(`/appointments/${id}/status`, { status: newStatus });
       if (res.data.status === "success") {
         setAppointments(appointments.map(a => a._id === id ? { ...a, status: newStatus } : a));
-        alert("Appointment status updated!");
       }
-    } catch (err) {
-      // Local edit in sandbox
+    } catch {
+      // optimistic local update
       setAppointments(appointments.map(a => a._id === id ? { ...a, status: newStatus } : a));
-      alert("Appointment status updated in Sandbox Mode!");
     }
   };
 
@@ -102,7 +72,7 @@ export default function AdminDashboard() {
               </div>
               <div>
                 <span className="text-xs text-slate-400 font-bold block uppercase tracking-wider">Revenue</span>
-                <span className="font-heading font-bold text-slate-800 text-xl mt-0.5">₹{stats.totalRevenue}</span>
+                <span className="font-heading font-bold text-slate-800 text-xl mt-0.5">₹{stats?.totalRevenue ?? 0}</span>
               </div>
             </div>
 
@@ -113,7 +83,7 @@ export default function AdminDashboard() {
               </div>
               <div>
                 <span className="text-xs text-slate-400 font-bold block uppercase tracking-wider">Patients</span>
-                <span className="font-heading font-bold text-slate-800 text-xl mt-0.5">{stats.totalUsers}</span>
+                <span className="font-heading font-bold text-slate-800 text-xl mt-0.5">{stats?.totalUsers ?? 0}</span>
               </div>
             </div>
 
@@ -124,7 +94,7 @@ export default function AdminDashboard() {
               </div>
               <div>
                 <span className="text-xs text-slate-400 font-bold block uppercase tracking-wider">Completed Assays</span>
-                <span className="font-heading font-bold text-slate-800 text-xl mt-0.5">{stats.totalTestsCount}</span>
+                <span className="font-heading font-bold text-slate-800 text-xl mt-0.5">{stats?.totalTestsCount ?? 0}</span>
               </div>
             </div>
 
@@ -135,7 +105,7 @@ export default function AdminDashboard() {
               </div>
               <div>
                 <span className="text-xs text-slate-400 font-bold block uppercase tracking-wider">Active Visits</span>
-                <span className="font-heading font-bold text-slate-800 text-xl mt-0.5">{stats.pendingAppointmentsCount}</span>
+                <span className="font-heading font-bold text-slate-800 text-xl mt-0.5">{stats?.pendingAppointmentsCount ?? 0}</span>
               </div>
             </div>
 

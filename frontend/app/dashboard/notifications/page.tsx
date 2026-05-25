@@ -6,10 +6,6 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import API from "@/services/api";
 
-const FALLBACK_NOTIFS = [
-  { _id: "n1", title: "Diagnostic Slot Confirmed", message: "Your Home Collection slot for tomorrow at 08:00 AM has been confirmed.", read: false, createdAt: new Date().toISOString() },
-  { _id: "n2", title: "Hematology Report Ready", message: "Your Complete Blood Count report has been compiled and NABL approved.", read: true, createdAt: new Date().toISOString() }
-];
 
 export default function PatientNotifications() {
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -21,9 +17,8 @@ export default function PatientNotifications() {
         if (res.data.status === "success") {
           setNotifications(res.data.data);
         }
-      } catch (err) {
-        console.warn("Could not query live notifications, loading fallback sandbox alerts.");
-        setNotifications(FALLBACK_NOTIFS);
+      } catch {
+        setNotifications([]);
       }
     };
     fetchNotifications();
@@ -35,8 +30,8 @@ export default function PatientNotifications() {
       if (res.data.status === "success") {
         setNotifications(notifications.map(n => n._id === id ? { ...n, read: true } : n));
       }
-    } catch (err) {
-      // Local sandbox edit
+    } catch {
+      // optimistic local update
       setNotifications(notifications.map(n => n._id === id ? { ...n, read: true } : n));
     }
   };

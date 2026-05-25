@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.env
+backend/node_modules/
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/reports/*
+!backend/reports/.gitkeep
+backend/payments/*
+!backend/payments/phonepe_qr.png
+dist/
+build/
+.DS_Store
+*.log

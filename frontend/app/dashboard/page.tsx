@@ -8,18 +8,6 @@ import DashboardSidebar from "@/components/DashboardSidebar";
 import { useAuth } from "@/context/AuthContext";
 import API from "@/services/api";
 
-const MOCK_APPOINTMENTS = [
-  {
-    _id: "m-app-1",
-    type: "Home Collection",
-    date: new Date().toISOString(),
-    timeslot: "08:00 AM - 10:00 AM",
-    status: "Confirmed",
-    totalAmount: 999,
-    tests: [{ name: "Complete Blood Count" }],
-    packages: [{ name: "Premium Executive Health Checkup" }]
-  }
-];
 
 export default function PatientDashboard() {
   const { user } = useAuth();
@@ -34,9 +22,8 @@ export default function PatientDashboard() {
         if (appRes.data.status === "success") {
           setAppointments(appRes.data.data);
         }
-      } catch (err) {
-        console.warn("Could not query live appointments, loading fallback sandbox data.");
-        setAppointments(MOCK_APPOINTMENTS);
+      } catch {
+        setAppointments([]);
       }
 
       try {
@@ -44,8 +31,8 @@ export default function PatientDashboard() {
         if (repRes.data.status === "success") {
           setReportsCount(repRes.data.data.filter((r: any) => r.status === "Ready").length);
         }
-      } catch (err) {
-        setReportsCount(1);
+      } catch {
+        setReportsCount(0);
       }
 
       try {
@@ -53,8 +40,8 @@ export default function PatientDashboard() {
         if (notRes.data.status === "success") {
           setNotificationsCount(notRes.data.data.filter((n: any) => !n.read).length);
         }
-      } catch (err) {
-        setNotificationsCount(2);
+      } catch {
+        setNotificationsCount(0);
       }
     };
 

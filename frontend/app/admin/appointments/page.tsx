@@ -6,20 +6,6 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import API from "@/services/api";
 
-const FALLBACK_APPOINTMENTS = [
-  {
-    _id: "app-101",
-    user: { name: "John Doe", email: "patient@example.com" },
-    type: "Home Collection",
-    date: new Date().toISOString(),
-    timeslot: "08:00 AM - 10:00 AM",
-    status: "Confirmed",
-    totalAmount: 999,
-    address: { street: "Near Bus Stand, Gurugunta", city: "Lingasugur", state: "Karnataka", zipCode: "584139" },
-    tests: [{ name: "Complete Blood Count" }],
-    packages: [{ name: "Premium Executive Health Checkup" }]
-  }
-];
 
 export default function AdminAppointments() {
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -30,9 +16,8 @@ export default function AdminAppointments() {
       if (res.data.status === "success") {
         setAppointments(res.data.data);
       }
-    } catch (err) {
-      console.warn("Could not query live appointments, loading fallback sandbox database.");
-      setAppointments(FALLBACK_APPOINTMENTS);
+    } catch {
+      setAppointments([]);
     }
   };
 
@@ -45,12 +30,10 @@ export default function AdminAppointments() {
       const res = await API.put(`/appointments/${id}/status`, { status: newStatus });
       if (res.data.status === "success") {
         setAppointments(appointments.map(a => a._id === id ? { ...a, status: newStatus } : a));
-        alert("Appointment status successfully synchronized.");
       }
-    } catch (err) {
-      // Local edit in sandbox
+    } catch {
+      // optimistic local update
       setAppointments(appointments.map(a => a._id === id ? { ...a, status: newStatus } : a));
-      alert("Appointment status updated in Sandbox Mode!");
     }
   };
 

@@ -6,10 +6,6 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import API from "@/services/api";
 
-const FALLBACK_USERS = [
-  { _id: "u-1", name: "John Doe", email: "patient@example.com", role: "patient", contactNumber: "+15550144", createdAt: new Date().toISOString() },
-  { _id: "u-2", name: "Dr. Sarah Jenkins", email: "admin@multidiagnostic.com", role: "admin", contactNumber: "+15550199", createdAt: new Date().toISOString() }
-];
 
 export default function AdminUsers() {
   const [users, setUsers] = useState<any[]>([]);
@@ -21,9 +17,8 @@ export default function AdminUsers() {
         if (res.data.status === "success") {
           setUsers(res.data.data);
         }
-      } catch (err) {
-        console.warn("Could not query live users, displaying sandbox mockup.");
-        setUsers(FALLBACK_USERS);
+      } catch {
+        setUsers([]);
       }
     };
     fetchUsers();

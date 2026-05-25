@@ -28,13 +28,8 @@ export default function AdminUploadReports() {
           setSelectedAppId(res.data.data[0]._id);
         }
       }
-    } catch (err) {
-      console.warn("Could not query live appointments, loading fallback queue.");
-      const mockQueue = [
-        { _id: "app-101", user: { name: "John Doe" }, packages: [{ name: "Premium Executive Health Checkup" }] }
-      ];
-      setAppointments(mockQueue);
-      setSelectedAppId(mockQueue[0]._id);
+    } catch {
+      setAppointments([]);
     }
   };
 
@@ -81,13 +76,8 @@ export default function AdminUploadReports() {
         setMetrics([{ name: "Hemoglobin", value: "", unit: "g/dL", referenceRange: "12.0 - 16.0", status: "Normal" }]);
         setTimeout(() => setSuccess(false), 3000);
       }
-    } catch (err) {
-      // Local sandbox save
-      setSuccess(true);
-      setClinicalRemarks("");
-      setMetrics([{ name: "Hemoglobin", value: "", unit: "g/dL", referenceRange: "12.0 - 16.0", status: "Normal" }]);
-      setTimeout(() => setSuccess(false), 3000);
-      alert("Clinical report published successfully in Sandbox Mode!");
+    } catch (err: any) {
+      alert(err.response?.data?.message || "Failed to publish report. Ensure the backend is running.");
     } finally {
       setLoading(false);
     }

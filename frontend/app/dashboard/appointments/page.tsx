@@ -6,19 +6,6 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import API from "@/services/api";
 
-const FALLBACK_APPOINTMENTS = [
-  {
-    _id: "m-app-1",
-    type: "Home Collection",
-    date: new Date().toISOString(),
-    timeslot: "08:00 AM - 10:00 AM",
-    status: "Confirmed",
-    totalAmount: 999,
-    address: { street: "Near Bus Stand, Gurugunta", city: "Lingasugur", state: "Karnataka", zipCode: "584139" },
-    tests: [{ name: "Complete Blood Count (CBC)" }],
-    packages: [{ name: "Premium Executive Health Checkup" }]
-  }
-];
 
 export default function PatientAppointments() {
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -30,9 +17,8 @@ export default function PatientAppointments() {
         if (res.data.status === "success") {
           setAppointments(res.data.data);
         }
-      } catch (err) {
-        console.warn("Could not query live appointments, showing mock sandbox booking.");
-        setAppointments(FALLBACK_APPOINTMENTS);
+      } catch {
+        setAppointments([]);
       }
     };
     fetchAppointments();

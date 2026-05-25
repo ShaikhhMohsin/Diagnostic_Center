@@ -6,23 +6,6 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import API from "@/services/api";
 
-const FALLBACK_REPORTS = [
-  {
-    _id: "m-rep-1",
-    status: "Ready",
-    clinicalRemarks: "Hemoglobin level is normal. Glucose level is slightly elevated, suggest monitoring blood sugar values post-meals.",
-    createdAt: new Date().toISOString(),
-    appointment: {
-      _id: "m-app-1",
-      packages: [{ name: "Premium Executive Health Checkup" }]
-    },
-    metrics: [
-      { name: "Hemoglobin", value: 14.5, unit: "g/dL", referenceRange: "12.0 - 16.0", status: "Normal" },
-      { name: "Fasting Blood Glucose", value: 108, unit: "mg/dL", referenceRange: "70 - 100", status: "High" },
-      { name: "Serum Cholesterol", value: 185, unit: "mg/dL", referenceRange: "125 - 200", status: "Normal" }
-    ]
-  }
-];
 
 export default function PatientReports() {
   const [reports, setReports] = useState<any[]>([]);
@@ -38,10 +21,8 @@ export default function PatientReports() {
             setExpandedReportId(res.data.data[0]._id);
           }
         }
-      } catch (err) {
-        console.warn("Could not query live reports, loading mock sandbox laboratory results.");
-        setReports(FALLBACK_REPORTS);
-        setExpandedReportId(FALLBACK_REPORTS[0]._id);
+      } catch {
+        setReports([]);
       }
     };
     fetchReports();
@@ -51,10 +32,6 @@ export default function PatientReports() {
     if (typeof window !== "undefined") {
       window.print();
     }
-  };
-
-  const handleDownloadSim = () => {
-    alert("Downloading clinical certified PDF report to your local system...");
   };
 
   return (
@@ -165,13 +142,17 @@ export default function PatientReports() {
                           <Printer className="w-4 h-4" />
                           <span>Print Assays</span>
                         </button>
-                        <button
-                          onClick={handleDownloadSim}
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-md shadow-blue-500/10 cursor-pointer"
-                        >
-                          <Download className="w-4 h-4" />
-                          <span>Download certified PDF</span>
-                        </button>
+                        {report.fileUrl && (
+                          <a
+                            href={report.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-md shadow-blue-500/10 cursor-pointer"
+                          >
+                            <Download className="w-4 h-4" />
+                            <span>Download certified PDF</span>
+                          </a>
+                        )}
                       </div>
 
                     </div>
