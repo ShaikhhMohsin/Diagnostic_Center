@@ -16,7 +16,8 @@ import {
   FileUp,
   LogOut,
   Activity,
-  ChevronRight
+  ChevronRight,
+  CreditCard
 } from "lucide-react";
 
 interface SidebarProps {
@@ -37,11 +38,13 @@ const DashboardSidebar: React.FC<SidebarProps> = ({ isAdmin = false }) => {
 
   const adminLinks = [
     { name: "Overview & Stats", path: "/admin", icon: LayoutDashboard },
-    { name: "Manage Users", path: "/admin/users", icon: Users },
+    { name: "Patients Manager", path: "/admin/patients", icon: Users },
+    { name: "Publish Reports", path: "/admin/reports", icon: FileUp },
+    { name: "Payments Ledger", path: "/admin/payments", icon: CreditCard },
     { name: "Appointments List", path: "/admin/appointments", icon: CalendarDays },
     { name: "Manage Lab Tests", path: "/admin/tests", icon: TestTube },
     { name: "Manage Packages", path: "/admin/packages", icon: Layers },
-    { name: "Upload Reports", path: "/admin/reports", icon: FileUp },
+    { name: "Manage Users", path: "/admin/users", icon: Activity },
   ];
 
   const links = isAdmin ? adminLinks : patientLinks;
