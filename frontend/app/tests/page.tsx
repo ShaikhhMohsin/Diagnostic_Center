@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Search, Stethoscope, Clock, ShieldAlert, ArrowRight, X, Calendar, MapPin, UserCheck, Plus, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import API from "@/services/api";
@@ -21,6 +21,7 @@ const FALLBACK_TESTS = [
 
 function TestsCatalog() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const initialQuery = searchParams.get("q") || "";
 
   const [tests, setTests] = useState(FALLBACK_TESTS);
@@ -119,15 +120,13 @@ function TestsCatalog() {
     try {
       const res = await API.post("/appointments", payload);
       if (res.data.status === "success") {
-        setSuccessMessage("Your diagnostic booking has been successfully recorded!");
         setSelectedTests([]);
         setIsDrawerOpen(false);
+        router.push(`/appointments/pay/${res.data.data._id}`);
       }
     } catch (err: any) {
-      console.warn("API booking failed, generating local sandbox success booking...");
-      setSuccessMessage("Your booking has been successfully recorded in Sandbox Mode!");
-      setSelectedTests([]);
-      setIsDrawerOpen(false);
+      console.error("Booking failed:", err);
+      alert(err.response?.data?.message || "Booking failed. Please check backend connection.");
     }
   };
 

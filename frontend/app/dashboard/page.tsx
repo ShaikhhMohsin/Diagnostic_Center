@@ -140,9 +140,20 @@ export default function PatientDashboard() {
                   </p>
                 </div>
 
-                <div className="flex flex-col items-start sm:items-end gap-1">
-                  <span className="text-[10px] text-slate-400 block uppercase font-bold">Total Amount</span>
-                  <span className="font-heading font-bold text-slate-800 text-xl">₹{ongoingBooking.totalAmount}</span>
+                <div className="flex flex-col items-start sm:items-end gap-2">
+                  <div className="flex flex-col items-start sm:items-end gap-1">
+                    <span className="text-[10px] text-slate-400 block uppercase font-bold">Total Amount</span>
+                    <span className="font-heading font-bold text-slate-800 text-xl">₹{ongoingBooking.totalAmount}</span>
+                  </div>
+                  {ongoingBooking.paymentStatus === "Pending" && (
+                    <Link
+                      href={`/appointments/pay/${ongoingBooking._id}`}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-[10px] font-bold shadow-md shadow-blue-600/10 transition-all flex items-center gap-1"
+                    >
+                      <span>Complete UPI Payment</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  )}
                 </div>
               </div>
 

@@ -2,6 +2,7 @@ const Appointment = require("../models/Appointment");
 const Notification = require("../models/Notification");
 const Test = require("../models/Test");
 const Package = require("../models/Package");
+const Payment = require("../models/Payment");
 
 // @desc    Book a new appointment
 // @route   POST /api/appointments
@@ -40,6 +41,16 @@ exports.bookAppointment = async (req, res) => {
       tests: tests || [],
       packages: packages || [],
       totalAmount,
+      status: "Pending",
+      paymentStatus: "Pending"
+    });
+
+    // Create Payment Record
+    const payment = await Payment.create({
+      appointment: appointment._id,
+      amount: totalAmount,
+      status: "Pending",
+      qrImagePath: "/payments/phonepe_qr.png"
     });
 
     // Create Notification
@@ -55,7 +66,7 @@ exports.bookAppointment = async (req, res) => {
       .populate("packages")
       .populate("patient", "name email contactNumber");
 
-    res.status(201).json({ status: "success", data: populatedAppointment });
+    res.status(201).json({ status: "success", data: populatedAppointment, paymentId: payment._id });
   } catch (error) {
     console.error("Booking Error:", error);
     res.status(500).json({ status: "fail", message: error.message });

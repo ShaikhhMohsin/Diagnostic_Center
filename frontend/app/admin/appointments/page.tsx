@@ -12,7 +12,7 @@ export default function AdminAppointments() {
 
   const fetchAppointments = async () => {
     try {
-      const res = await API.get("/appointments");
+      const res = await API.get("/appointments/all");
       if (res.data.status === "success") {
         setAppointments(res.data.data);
       }
@@ -59,8 +59,8 @@ export default function AdminAppointments() {
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center border-b border-slate-100 pb-5 gap-4">
                   <div>
-                    <h3 className="font-heading font-bold text-slate-800 text-sm leading-snug">{app.user?.name || "Anonymous Patient"}</h3>
-                    <p className="text-slate-400 text-[10px] font-semibold mt-0.5">{app.user?.email}</p>
+                    <h3 className="font-heading font-bold text-slate-800 text-sm leading-snug">{app.patient?.name || "Anonymous Patient"}</h3>
+                    <p className="text-slate-400 text-[10px] font-semibold mt-0.5">{app.patient?.email || "No Email"}</p>
                   </div>
 
                   <div className="flex items-center gap-3">

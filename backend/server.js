@@ -14,6 +14,7 @@ const reportRoutes = require("./routes/reportRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 const patientRoutes = require("./routes/patientRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 // Load env vars
 dotenv.config();
@@ -66,6 +67,7 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/patients", patientRoutes);
+app.use("/api/payments", paymentRoutes);
 
 // Basic Health Check Route
 app.get("/api/health", (req, res) => {

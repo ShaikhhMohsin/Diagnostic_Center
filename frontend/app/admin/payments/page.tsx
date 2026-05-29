@@ -13,7 +13,9 @@ import {
   FileSpreadsheet,
   QrCode,
   Image as ImageIcon,
-  RefreshCw
+  RefreshCw,
+  Check,
+  X
 } from "lucide-react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import DashboardSidebar from "@/components/DashboardSidebar";
@@ -21,12 +23,21 @@ import API from "@/services/api";
 
 interface PaymentLog {
   _id: string;
-  patientId: string;
-  fullName: string;
-  testType: string;
-  doctorName: string;
-  transactionId: string;
-  updatedAt: string;
+  amount: number;
+  status: "Pending" | "Paid" | "Failed";
+  transactionId?: string;
+  createdAt: string;
+  appointment?: {
+    _id: string;
+    type: string;
+    patient?: {
+      name: string;
+      email: string;
+      contactNumber: string;
+    };
+    tests?: { name: string }[];
+    packages?: { name: string }[];
+  };
 }
 
 export default function PaymentsLedger() {
@@ -41,7 +52,7 @@ export default function PaymentsLedger() {
   const fetchPaymentLogs = async () => {
     setLoading(true);
     try {
-      const res = await API.get("/patients/payments/history");
+      const res = await API.get("/payments/history/all");
       if (res.data.status === "success") {
         setLogs(res.data.data);
       }
@@ -93,13 +104,35 @@ export default function PaymentsLedger() {
     }
   };
 
+  // Handle Manual Verification
+  const handleVerify = async (id: string, status: "Paid" | "Failed") => {
+    try {
+      const res = await API.put(`/payments/${id}/verify`, { status });
+      if (res.data.status === "success") {
+        showToast("success", `Transaction updated to ${status} successfully!`);
+        fetchPaymentLogs();
+      }
+    } catch (err: any) {
+      showToast("error", err.response?.data?.message || "Failed to update transaction status.");
+    }
+  };
+
   const filteredLogs = logs.filter((log) => {
     const term = search.toLowerCase();
+    const patientName = log.appointment?.patient?.name?.toLowerCase() || "";
+    const contact = log.appointment?.patient?.contactNumber || "";
+    const txnId = log.transactionId?.toLowerCase() || "";
+    
+    // Aggregate all test/package names
+    const tests = log.appointment?.tests?.map(t => t.name.toLowerCase()).join(" ") || "";
+    const packages = log.appointment?.packages?.map(p => p.name.toLowerCase()).join(" ") || "";
+
     return (
-      log.fullName.toLowerCase().includes(term) ||
-      log.patientId.toLowerCase().includes(term) ||
-      log.transactionId.toLowerCase().includes(term) ||
-      log.testType.toLowerCase().includes(term)
+      patientName.includes(term) ||
+      contact.includes(term) ||
+      txnId.includes(term) ||
+      tests.includes(term) ||
+      packages.includes(term)
     );
   });
 
@@ -226,43 +259,97 @@ export default function PaymentsLedger() {
                   <thead>
                     <tr className="border-b border-slate-100 pb-2.5 text-slate-400 uppercase font-bold text-[9px] tracking-wider">
                       <th className="py-3 px-2">Patient</th>
-                      <th className="py-3 px-2">Assay Parameter</th>
+                      <th className="py-3 px-2">Assays / Bundles</th>
                       <th className="py-3 px-2">Transaction ID</th>
-                      <th className="py-3 px-2">Total Paid</th>
-                      <th className="py-3 px-2 text-right">Audit Date</th>
+                      <th className="py-3 px-2">Amount</th>
+                      <th className="py-3 px-2">Status</th>
+                      <th className="py-3 px-2 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {loading ? (
                       <tr>
-                        <td colSpan={5} className="py-8 text-center">
+                        <td colSpan={6} className="py-8 text-center">
                           <Loader2 className="w-6 h-6 text-blue-600 animate-spin mx-auto mb-2" />
                           <span className="text-slate-400 text-[10px] font-bold">Auditing local transaction ledgers...</span>
                         </td>
                       </tr>
                     ) : filteredLogs.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="py-8 text-center text-slate-400 font-bold text-[10px]">
+                        <td colSpan={6} className="py-8 text-center text-slate-400 font-bold text-[10px]">
                           No logged transactions found.
                         </td>
                       </tr>
                     ) : (
-                      filteredLogs.map((log) => (
-                        <tr key={log._id} className="border-b border-slate-50/50 hover:bg-slate-50/30 transition-colors">
-                          <td className="py-3 px-2">
-                            <div>
-                              <p className="font-bold text-slate-800">{log.fullName}</p>
-                              <p className="text-[9px] text-slate-400 font-semibold mt-0.5">{log.patientId}</p>
-                            </div>
-                          </td>
-                          <td className="py-3 px-2 text-slate-500 font-medium truncate max-w-[120px]">{log.testType}</td>
-                          <td className="py-3 px-2 font-mono text-[10px] text-slate-800 font-bold">{log.transactionId}</td>
-                          <td className="py-3 px-2 text-emerald-600 font-bold">₹499.00</td>
-                          <td className="py-3 px-2 text-right text-slate-500 font-medium">
-                            {new Date(log.updatedAt).toLocaleDateString()}
-                          </td>
-                        </tr>
-                      ))
+                      filteredLogs.map((log) => {
+                        const patientName = log.appointment?.patient?.name || "Deleted User";
+                        const phone = log.appointment?.patient?.contactNumber || "N/A";
+                        
+                        // Combine tests and packages names
+                        const testNames = log.appointment?.tests?.map(t => t.name) || [];
+                        const pkgNames = log.appointment?.packages?.map(p => p.name) || [];
+                        const displayAssays = [...testNames, ...pkgNames].join(", ") || "No tests selected";
+
+                        return (
+                          <tr key={log._id} className="border-b border-slate-50/50 hover:bg-slate-50/30 transition-colors">
+                            <td className="py-3 px-2">
+                              <div>
+                                <p className="font-bold text-slate-800">{patientName}</p>
+                                <p className="text-[9px] text-slate-400 font-semibold mt-0.5">{phone}</p>
+                              </div>
+                            </td>
+                            <td className="py-3 px-2 text-slate-500 font-medium truncate max-w-[150px]" title={displayAssays}>
+                              {displayAssays}
+                            </td>
+                            <td className="py-3 px-2 font-mono text-[10px] text-slate-800 font-bold">
+                              {log.transactionId || <span className="text-amber-500 italic font-sans font-medium text-[9px]">Not Submitted</span>}
+                            </td>
+                            <td className="py-3 px-2 text-slate-800 font-bold">₹{log.amount}</td>
+                            <td className="py-3 px-2">
+                              <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
+                                log.status === "Paid"
+                                  ? "bg-emerald-50 text-emerald-700"
+                                  : log.status === "Failed"
+                                  ? "bg-rose-50 text-rose-700"
+                                  : "bg-amber-50 text-amber-700"
+                              }`}>
+                                {log.status}
+                              </span>
+                            </td>
+                            <td className="py-3 px-2 text-right">
+                              {log.status !== "Paid" && log.transactionId && (
+                                <div className="flex justify-end gap-1.5">
+                                  <button
+                                    onClick={() => handleVerify(log._id, "Paid")}
+                                    className="bg-emerald-50 hover:bg-emerald-100 text-emerald-600 p-1.5 rounded-lg border border-emerald-200 transition-all cursor-pointer"
+                                    title="Verify & Mark Paid"
+                                  >
+                                    <Check className="w-3.5 h-3.5" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleVerify(log._id, "Failed")}
+                                    className="bg-rose-50 hover:bg-rose-100 text-rose-600 p-1.5 rounded-lg border border-rose-200 transition-all cursor-pointer"
+                                    title="Mark Failed"
+                                  >
+                                    <X className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              )}
+                              {log.status === "Paid" && (
+                                <span className="text-[10px] text-slate-400 font-semibold italic flex items-center justify-end gap-1">
+                                  <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                                  Verified
+                                </span>
+                              )}
+                              {!log.transactionId && log.status !== "Paid" && (
+                                <span className="text-[10px] text-slate-400 font-semibold italic">
+                                  Awaiting Payment
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })
                     )}
                   </tbody>
                 </table>
