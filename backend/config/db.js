@@ -26,6 +26,22 @@ const connectDB = async () => {
       const dbPath = path.join(__dirname, "../data");
       if (!fs.existsSync(dbPath)) {
         fs.mkdirSync(dbPath, { recursive: true });
+      } else {
+        // Clean up stale lock files if they exist to prevent startup failures after improper shutdown
+        const lockFiles = [
+          path.join(dbPath, "mongod.lock"),
+          path.join(dbPath, "WiredTiger.lock")
+        ];
+        lockFiles.forEach(file => {
+          if (fs.existsSync(file)) {
+            try {
+              fs.unlinkSync(file);
+              console.log(`Removed stale lock file: ${file}`);
+            } catch (err) {
+              console.warn(`Could not remove lock file ${file}: ${err.message}`);
+            }
+          }
+        });
       }
 
       mongoServer = await MongoMemoryServer.create({
@@ -49,5 +65,40 @@ const connectDB = async () => {
     }
   }
 };
+
+// Graceful shutdown helper
+const gracefulShutdown = async () => {
+  console.log("Shutting down database connection...");
+  try {
+    await mongoose.disconnect();
+    console.log("Mongoose disconnected.");
+  } catch (err) {
+    console.error("Error during Mongoose disconnect:", err);
+  }
+  if (mongoServer) {
+    try {
+      await mongoServer.stop();
+      console.log("Self-managed MongoDB stopped.");
+    } catch (err) {
+      console.error("Error stopping MongoMemoryServer:", err);
+    }
+  }
+};
+
+// Register process termination hooks for clean shutdown
+process.on("SIGINT", async () => {
+  await gracefulShutdown();
+  process.exit(0);
+});
+
+process.on("SIGTERM", async () => {
+  await gracefulShutdown();
+  process.exit(0);
+});
+
+process.once("SIGUSR2", async () => {
+  await gracefulShutdown();
+  process.kill(process.pid, "SIGUSR2");
+});
 
 module.exports = connectDB;
