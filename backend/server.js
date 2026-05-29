@@ -21,7 +21,7 @@ dotenv.config();
 // Connect to database
 connectDB().then(() => {
   // Seed Database
-  //seedDatabase();
+  seedDatabase();
 });
 
 const app = express();
@@ -42,7 +42,12 @@ localFolders.forEach(folder => {
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(helmet({
   crossOriginResourcePolicy: false // Allows loading external medical images securely
 }));
@@ -59,7 +64,7 @@ app.use("/api/packages", packageRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/notifications", notificationRoutes);
-app.use("/api/admin/analytics", analyticsRoutes);
+app.use("/api/analytics", analyticsRoutes);
 app.use("/api/patients", patientRoutes);
 
 // Basic Health Check Route

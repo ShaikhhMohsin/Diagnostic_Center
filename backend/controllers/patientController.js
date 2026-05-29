@@ -171,6 +171,21 @@ exports.generateReport = async (req, res) => {
     // PDFKit Creation
     const doc = new PDFDocument({ margin: 50, size: "A4" });
     const writeStream = fs.createWriteStream(filePath);
+
+    writeStream.on("finish", async () => {
+      // Update patient status in DB
+      patient.reportStatus = "Ready";
+      patient.reportPath = relativePath;
+      await patient.save();
+      
+      res.status(200).json({ status: "success", data: patient, reportUrl: relativePath });
+    });
+
+    writeStream.on("error", (err) => {
+      console.error("PDF generation stream write error:", err);
+      res.status(500).json({ status: "fail", message: "Failed to write PDF file to local reports directory." });
+    });
+
     doc.pipe(writeStream);
 
     // Color Palette
@@ -322,19 +337,6 @@ exports.generateReport = async (req, res) => {
     doc.fillColor("#ffffff").fontSize(7).text("This report is digitally certified. Offline storage folder reference: /reports.", 50, 822, { align: "center" });
 
     doc.end();
-
-    writeStream.on("finish", async () => {
-      // Update patient status in DB
-      patient.reportStatus = "Ready";
-      patient.reportPath = relativePath;
-      await patient.save();
-      
-      res.status(200).json({ status: "success", data: patient, reportUrl: relativePath });
-    });
-
-    writeStream.on("error", (err) => {
-      throw err;
-    });
 
   } catch (error) {
     console.error("Generate PDF Report error:", error);

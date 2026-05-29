@@ -15,7 +15,13 @@ export default function AdminDashboard() {
     try {
       const statsRes = await API.get("/analytics");
       if (statsRes.data.status === "success") {
-        setStats(statsRes.data.data);
+        const statsData = statsRes.data.data;
+        setStats({
+          totalRevenue: statsData.summary.totalRevenue,
+          totalUsers: statsData.summary.totalPatients,
+          totalTestsCount: statsData.summary.totalReports,
+          pendingAppointmentsCount: statsData.summary.totalBookings,
+        });
       }
     } catch {
       // backend not available
